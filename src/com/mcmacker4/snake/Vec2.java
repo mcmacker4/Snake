@@ -1,4 +1,4 @@
-package engine;
+package com.mcmacker4.snake;
 
 public class Vec2 {
 	

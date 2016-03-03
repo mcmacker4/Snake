@@ -1,4 +1,4 @@
-package engine;
+package com.mcmacker4.snake;
 
 import java.awt.Canvas;
 import java.awt.Color;
