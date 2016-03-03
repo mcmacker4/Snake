@@ -30,12 +30,12 @@ public class Engine implements Runnable {
 		frame.add(canvas);
 		frame.pack();
 		frame.setVisible(true);
-		canvas.requestFocus();
 		canvas.createBufferStrategy(2);
 		canvas.addKeyListener(snake);
 		buffer = canvas.getBufferStrategy();
 		last = System.currentTimeMillis();
 		rand = new Random();
+		canvas.requestFocus();
 	}
 	
 	@Override
@@ -52,6 +52,8 @@ public class Engine implements Runnable {
 					
 					snake.update();
 					snake.draw(graphics);
+					
+					frame.setTitle("Snake - Length: " + snake.getLength());
 					
 					if(!buffer.contentsLost())
 						buffer.show();

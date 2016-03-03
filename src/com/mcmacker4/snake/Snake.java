@@ -15,7 +15,7 @@ public class Snake implements KeyListener {
 			UP = new Vec2(0, -1),
 			DOWN = new Vec2(0, 1);
 	
-	private final int INIT_LENGTH = 50;
+	private final int INIT_LENGTH = 1;
 	private final int GROWTH = 5;
 	
 	private Vec2 positions[];
@@ -141,6 +141,10 @@ public class Snake implements KeyListener {
 			break;
 		}
 		keyEvents.remove(0);
+	}
+	
+	public int getLength() {
+		return positions.length;
 	}
 
 	@Override
