@@ -146,6 +146,14 @@ public class Snake implements KeyListener {
 	public int getLength() {
 		return positions.length;
 	}
+	
+	public int getRealLength() {
+		int length = 0;
+		try {
+			while(positions[length++] != null) {}
+		} catch(Exception e) {}
+		return length - 1;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {}

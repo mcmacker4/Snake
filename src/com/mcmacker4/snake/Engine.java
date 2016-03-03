@@ -53,7 +53,7 @@ public class Engine implements Runnable {
 					snake.update();
 					snake.draw(graphics);
 					
-					frame.setTitle("Snake - Length: " + snake.getLength());
+					frame.setTitle("Snake - Length: " + snake.getRealLength());
 					
 					if(!buffer.contentsLost())
 						buffer.show();
