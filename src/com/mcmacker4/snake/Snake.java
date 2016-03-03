@@ -14,7 +14,7 @@ public class Snake implements KeyListener {
 			UP = new Vec2(0, -1),
 			DOWN = new Vec2(0, 1);
 	
-	private final int INIT_LENGTH = 20;
+	private final int INIT_LENGTH = 50;
 	private final int GROWTH = 5;
 	
 	private Vec2 positions[];
@@ -88,10 +88,10 @@ public class Snake implements KeyListener {
 	
 	private Vec2 createNewPos() {
 		Vec2 newPos = positions[0].plus(direction);
-		if(newPos.x > 80) newPos.x = 0;
-		if(newPos.x < 0) newPos.x = 80;
-		if(newPos.y > 60) newPos.y = 0;
-		if(newPos.y < 0) newPos.y = 60;
+		if(newPos.x > 79) newPos.x = 0;
+		if(newPos.x < 0) newPos.x = 79;
+		if(newPos.y > 59) newPos.y = 0;
+		if(newPos.y < 0) newPos.y = 59;
 		return newPos;
 	}
 	
