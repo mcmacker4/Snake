@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Snake implements KeyListener {
@@ -22,7 +23,8 @@ public class Snake implements KeyListener {
 	private Vec2 seed;
 	
 	private boolean growing;
-	private boolean changingDirection;
+	
+	private ArrayList<KeyEvent> keyEvents;
 	
 	private long lastUpdate;
 	
@@ -33,11 +35,13 @@ public class Snake implements KeyListener {
 		for(int i = 0; i < positions.length; i++) positions[i] = new Vec2(40, 30);
 		direction = UP;
 		rand = new Random();
+		keyEvents = new ArrayList<>();
 		createSeed();
 	}
 	
 	public void update() {
 		if(System.currentTimeMillis() - lastUpdate < 50) return;
+		execOneKeyEvent();
 		lastUpdate = System.currentTimeMillis();
 		Vec2 newPos = createNewPos();
 		if(occupied(newPos)) {
@@ -61,7 +65,6 @@ public class Snake implements KeyListener {
 			growing = true;
 			createSeed();
 		}
-		changingDirection = false;
 	}
 	
 	public void draw(Graphics g) {
@@ -115,34 +118,41 @@ public class Snake implements KeyListener {
 		for(int i = 0; i < positions.length; i++) positions[i] = new Vec2(40, 30);
 		System.err.println("RESET!");
 	}
+	
+	private void execOneKeyEvent() {
+		if(keyEvents.isEmpty()) return;
+		KeyEvent e = keyEvents.get(0);
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			if(direction == DOWN) break;
+			direction = UP;
+			break;
+		case KeyEvent.VK_DOWN:
+			if(direction == UP) break;
+			direction = DOWN;
+			break;
+		case KeyEvent.VK_RIGHT:
+			if(direction == LEFT) break;
+			direction = RIGHT;
+			break;
+		case KeyEvent.VK_LEFT:
+			if(direction == RIGHT) break;
+			direction = LEFT;
+			break;
+		}
+		keyEvents.remove(0);
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_UP:
-			if(direction == DOWN || changingDirection) return;
-			direction = UP;
-			changingDirection = true;
-			break;
-		case KeyEvent.VK_DOWN:
-			if(direction == UP || changingDirection) return;
-			direction = DOWN;
-			changingDirection = true;
-			break;
-		case KeyEvent.VK_RIGHT:
-			if(direction == LEFT || changingDirection) return;
-			direction = RIGHT;
-			changingDirection = true;
-			break;
-		case KeyEvent.VK_LEFT:
-			if(direction == RIGHT || changingDirection) return;
-			direction = LEFT;
-			changingDirection = true;
-			break;
-		}
+		int c = e.getKeyCode();
+		if(c == KeyEvent.VK_UP || c == KeyEvent.VK_DOWN || c == KeyEvent.VK_RIGHT || c == KeyEvent.VK_LEFT)
+			if(keyEvents.size() < 2) keyEvents.add(e);
+		else if(c == KeyEvent.VK_R)
+			reset();
 	}
 
 	@Override
