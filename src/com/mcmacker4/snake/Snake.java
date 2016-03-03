@@ -14,11 +14,12 @@ public class Snake implements KeyListener {
 			UP = new Vec2(0, -1),
 			DOWN = new Vec2(0, 1);
 	
-	private final int INIT_LENGTH = 1;
+	private final int INIT_LENGTH = 20;
+	private final int GROWTH = 5;
 	
-	Vec2 positions[];
-	Vec2 direction;
-	Vec2 seed;
+	private Vec2 positions[];
+	private Vec2 direction;
+	private Vec2 seed;
 	
 	private boolean growing;
 	private boolean changingDirection;
@@ -29,8 +30,8 @@ public class Snake implements KeyListener {
 	
 	public Snake() {
 		positions = new Vec2[INIT_LENGTH];
-		positions[0] = new Vec2(50, 50);
-		direction = new Vec2(0, 1);
+		for(int i = 0; i < positions.length; i++) positions[i] = new Vec2(40, 30);
+		direction = UP;
 		rand = new Random();
 		createSeed();
 	}
@@ -38,7 +39,14 @@ public class Snake implements KeyListener {
 	public void update() {
 		if(System.currentTimeMillis() - lastUpdate < 50) return;
 		lastUpdate = System.currentTimeMillis();
-		Vec2 newPos = positions[0].plus(direction);
+		Vec2 newPos = createNewPos();
+		if(occupied(newPos)) {
+			try {
+				Thread.sleep(2000);
+				newPos = new Vec2(40, 30);
+			} catch (InterruptedException e) {}
+			reset();
+		}
 		if(growing) {
 			grow();
 			growing = false;
@@ -49,7 +57,7 @@ public class Snake implements KeyListener {
 			} catch(Exception e) {}
 		}
 		positions[0] = newPos;
-		if(positions[0].x == seed.x && positions[0].y == seed.y) {
+		if(positions[0].equals(seed)) {
 			growing = true;
 			createSeed();
 		}
@@ -59,9 +67,10 @@ public class Snake implements KeyListener {
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
 		for(int i = 0; i < positions.length; i++) {
+			if(positions[i] == null) continue;
 			g.fillRect(positions[i].x * 10, positions[i].y * 10, 10, 10);
 		}
-		g.setColor(Color.BLUE);
+		g.setColor(Color.GREEN);
 		g.fillRect(seed.x * 10, seed.y * 10, 10, 10);
 	}
 	
@@ -70,25 +79,41 @@ public class Snake implements KeyListener {
 	}
 	
 	private void grow() {
-		Vec2 newPositions[] = new Vec2[positions.length + 1];
+		Vec2 newPositions[] = new Vec2[positions.length + GROWTH];
 		for(int i = 0; i < positions.length; i++) {
 			newPositions[i] = positions[i];
 		}
 		positions = newPositions;
 	}
 	
+	private Vec2 createNewPos() {
+		Vec2 newPos = positions[0].plus(direction);
+		if(newPos.x > 80) newPos.x = 0;
+		if(newPos.x < 0) newPos.x = 80;
+		if(newPos.y > 60) newPos.y = 0;
+		if(newPos.y < 0) newPos.y = 60;
+		return newPos;
+	}
+	
 	private void createSeed() {
 		seed = new Vec2(rand.nextInt(80), rand.nextInt(60));
-		while(!validSeed()) {
+		while(occupied(seed)) {
 			seed = new Vec2(rand.nextInt(80), rand.nextInt(60));
 		}
 	}
 	
-	private boolean validSeed() {
+	private boolean occupied(Vec2 pos) {
 		for(int i = 0; i < positions.length; i++) {
-			if(seed == positions[i]) return false;
+			if(positions[i] == null) continue;
+			if(positions[i].equals(pos)) return true;
 		}
-		return true;
+		return false;
+	}
+	
+	private void reset() {
+		positions = new Vec2[INIT_LENGTH];
+		for(int i = 0; i < positions.length; i++) positions[i] = new Vec2(40, 30);
+		System.err.println("RESET!");
 	}
 
 	@Override
