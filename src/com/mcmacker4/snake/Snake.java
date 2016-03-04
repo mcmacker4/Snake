@@ -17,6 +17,7 @@ public class Snake implements KeyListener {
 	
 	private final int INIT_LENGTH = 1;
 	private final int GROWTH = 5;
+	private final float SPEED = 3;
 	
 	private Vec2 positions[];
 	private Vec2 direction;
@@ -40,7 +41,7 @@ public class Snake implements KeyListener {
 	}
 	
 	public void update() {
-		if(System.currentTimeMillis() - lastUpdate < 50) return;
+		if(System.currentTimeMillis() - lastUpdate < (100/SPEED)) return;
 		execOneKeyEvent();
 		lastUpdate = System.currentTimeMillis();
 		Vec2 newPos = createNewPos();
@@ -116,7 +117,6 @@ public class Snake implements KeyListener {
 	private void reset() {
 		positions = new Vec2[INIT_LENGTH];
 		for(int i = 0; i < positions.length; i++) positions[i] = new Vec2(40, 30);
-		System.err.println("RESET!");
 	}
 	
 	private void execOneKeyEvent() {
